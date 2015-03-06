@@ -107,8 +107,7 @@ namespace WindowsFormsApplication2
         }
         private void button2_Click_1(object sender, EventArgs e)
         {
-            DataSet ds = new DataSet();
-        ds.Tables.Add(DataGridView2DataTable(dataGridView1, "editedTable"));
+        dataGridView2.DataSource = (DataGridView2DataTable(dataGridView1, "editedTable"));
 
 
         }
