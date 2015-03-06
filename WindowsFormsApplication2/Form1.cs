@@ -25,27 +25,46 @@ namespace WindowsFormsApplication2
 
         private void button1_Click(object sender, EventArgs e)
         {
-           string connString = @"Data Source=(localdb)\ProjectsV12;Initial Catalog=test;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False";
-            SqlConnection connection = new SqlConnection(connString);
-            SqlCommand cmdfid = connection.CreateCommand();
-            cmdfid.CommandText = "SELECT DISTINCT Id FROM FN WHERE FournisseurName='" + FournisseurSelectCombo.SelectedItem +"' ;";
-            // Open the connection of requesting fid
-            connection.Open();
-            int FID = ((int)cmdfid.ExecuteScalar());
-            connection.Close();
-            //close it
-            string query = "select * from articlenew where Fid=" + FID + " and MinimumStock > Stock";
+            if (!string.IsNullOrEmpty(FournisseurSelectCombo.SelectedText))
+            {
+                MessageBox.Show("Vous avez choisi aucune fournisseur!");
+            }
+            else
+            {
+                try
+                {
+                    string connString =
+                    @"Data Source=(localdb)\ProjectsV12;Initial Catalog=test;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False";
+                    SqlConnection connection = new SqlConnection(connString);
+                    SqlCommand cmdfid = connection.CreateCommand();
+                    cmdfid.CommandText = "SELECT DISTINCT Id FROM FN WHERE FournisseurName='" +
+                                         FournisseurSelectCombo.SelectedItem + "' ;";
+                    // Open the connection of requesting fid
+                    connection.Open();
+                    int FID = ((int)cmdfid.ExecuteScalar());
+                    connection.Close();
+                    //close it
+                    string query = "select * from articlenew where Fid=" + FID + " and MinimumStock > Stock";
 
-            SqlConnection conn = new SqlConnection(connString);
-            SqlCommand cmd = new SqlCommand(query, conn);
-            //open the connection for 1. filtering \"Minimum Stock\" > \"Current Stock\ , 2. getting the table to datatable/datagridview
-            conn.Open();
-            SqlDataAdapter da = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            dataGridView1.DataSource = dt;
-            conn.Close();
-            da.Dispose();
+                    SqlConnection conn = new SqlConnection(connString);
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    //open the connection for 1. filtering \"Minimum Stock\" > \"Current Stock\ , 2. getting the table to datatable/datagridview
+                    conn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+                    dataGridView1.DataSource = dt;
+                    conn.Close();
+                    da.Dispose();
+                    button2.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erreur sur SQL:" + ex);
+                    throw;
+                }
+               
+            }
         }
 
         private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
@@ -74,11 +93,11 @@ namespace WindowsFormsApplication2
 
                 sqlReader.Close();
             }
-            // TODO: This line of code loads data into the 'testDataSet.article' table. You can move, or remove it, as needed.
-            dataGridView1.Columns[0].Visible = false;
-            dataGridView1.Columns[1].Visible = false;
+           // dataGridView1.Columns["Ignorer"].ReadOnly = false;
 
         }
+
+
         public DataTable DataGridView2DataTable(DataGridView dgv, String tblName)
         {
 
@@ -105,11 +124,13 @@ namespace WindowsFormsApplication2
 
             return dt;
         }
-        private void button2_Click_1(object sender, EventArgs e)
+
+
+        private void button2_Click_2(object sender, EventArgs e)
         {
-        dataGridView2.DataSource = (DataGridView2DataTable(dataGridView1, "editedTable"));
-
-
+            DataTable tempdt = DataGridView2DataTable(dataGridView1, "tempdt");
+            Form2 f2 = new Form2(tempdt);
+            f2.ShowDialog();
         }
     }
 }

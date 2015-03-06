@@ -12,9 +12,10 @@ namespace WindowsFormsApplication2
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        public Form2(DataTable tempdt)
         {
             InitializeComponent();
+            dataGridView1.DataSource = tempdt;
         }
 
         private void button1_Click(object sender, EventArgs e)
