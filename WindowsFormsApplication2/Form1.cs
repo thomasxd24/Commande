@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -54,6 +55,9 @@ namespace WindowsFormsApplication2
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     da.Fill(dt);
+
+                    dt.Columns.Add(new DataColumn("QuantitéCommander", typeof(Double)));
+                    dt.Columns["QuantitéCommander"].Expression = "(MinimumStock-Stock) / QuantitéParCarton)"; 
                     dataGridView1.DataSource = dt;
                     conn.Close();
                     da.Dispose();
@@ -61,6 +65,7 @@ namespace WindowsFormsApplication2
                 }
                 catch (Exception ex)
                 {
+                    Clipboard.SetText(ex.ToString());
                     MessageBox.Show("Erreur sur SQL:" + ex);
                     throw;
                 }
