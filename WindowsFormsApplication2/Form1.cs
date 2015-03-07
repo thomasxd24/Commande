@@ -56,8 +56,8 @@ namespace WindowsFormsApplication2
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    dt.Columns.Add(new DataColumn("QuantitéCommander", typeof(Double)));
-                    dt.Columns["QuantitéCommander"].Expression = "(MinimumStock-Stock) / QuantitéParCarton)"; 
+                    dt.Columns.Add(new DataColumn("QuantitéCommander", typeof(int)));
+                    dt.Columns["QuantitéCommander"].Expression = "IIF(((MinimumStock-Stock)%QuantitéParCarton)/QuantitéParCarton > 0.5, (MinimumStock-Stock)/QuantitéParCarton , ((MinimumStock-Stock)/QuantitéParCarton) +1)"; 
                     dataGridView1.DataSource = dt;
                     conn.Close();
                     da.Dispose();
@@ -65,7 +65,7 @@ namespace WindowsFormsApplication2
                 }
                 catch (Exception ex)
                 {
-                    Clipboard.SetText(ex.ToString());
+                    
                     MessageBox.Show("Erreur sur SQL:" + ex);
                     throw;
                 }
